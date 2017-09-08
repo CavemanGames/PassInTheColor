@@ -2,7 +2,8 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+//#include "CoreMinimal.h"
+#include "Engine.h"
 #include "GameFramework/Pawn.h"
 #include "ShipController.generated.h"
 
@@ -10,6 +11,9 @@ UCLASS()
 class PASSINTHECOLOR_API AShipController : public APawn
 {
 	GENERATED_BODY()
+
+	//UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
+		//class UShapeComponent* CollisionBox;
 
 public:
 	// Sets default values for this pawn's properties
@@ -27,9 +31,6 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UPROPERTY(EditAnywhere)
-		UShapeComponent* CollisionBox;
-
-	UPROPERTY(EditAnywhere)
 		float Speed = 10.f;
 
 	void Move_Forward(float AxisValue);
@@ -43,4 +44,7 @@ public:
 	UFUNCTION()
 		void OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	
+private:
+
+	float RotationValue = 0.f;
 };

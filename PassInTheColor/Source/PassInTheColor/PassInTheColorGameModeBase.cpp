@@ -33,7 +33,7 @@ void APassInTheColorGameModeBase::Tick(float DeltaSeconds)
 
 			if (World)
 			{
-				FVector Location = FVector(900.0f, 0.f, 120.0f);
+				FVector Location = FVector(3000.0f, 0.f, 120.0f);
 
 				World->SpawnActor<AResistenceWall>(WallToSpawnBlueprint, Location, FRotator::ZeroRotator);
 				bIsWallSpawned = true;

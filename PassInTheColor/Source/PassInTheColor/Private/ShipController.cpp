@@ -11,9 +11,9 @@ AShipController::AShipController()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Root"));
-	CollisionBox->bGenerateOverlapEvents = true;
-	CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &AShipController::OnOverlap);
+	//CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Root"));
+	//CollisionBox->bGenerateOverlapEvents = true;
+	//CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &AShipController::OnOverlap);
 
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 }
@@ -22,7 +22,9 @@ AShipController::AShipController()
 void AShipController::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	const FVector2D ViewportSize = FVector2D(GEngine->GameViewport->Viewport->GetSizeXY());
+	SetActorLocation(FVector(110, ((ViewportSize.Y / 1.617) / 2), 42));
 }
 
 // Called every frame
@@ -32,6 +34,29 @@ void AShipController::Tick(float DeltaTime)
 
 	if (!CurrentVelocity.IsZero()) {
 		FVector NewLocation = GetActorLocation() + Speed * CurrentVelocity * DeltaTime;
+		const FVector2D ViewportSize = FVector2D(GEngine->GameViewport->Viewport->GetSizeXY());
+		
+		//UE_LOG(LogTemp, Warning, TEXT("ViewPort %f"), (ViewportSize.X));
+		
+		if (NewLocation.X > ((ViewportSize.X / 1.617)))
+		{
+			NewLocation.X = ((ViewportSize.X / 1.617));
+		}
+		if (NewLocation.X < 110)
+		{
+			NewLocation.X = 110;
+		}
+
+		if (NewLocation.Y > ((ViewportSize.Y / 1.617) - (80 * 1.617)))
+		{
+			NewLocation.Y = ((ViewportSize.Y / 1.617) - (80 * 1.617));
+		}
+		if (NewLocation.Y < 10)
+		{
+			NewLocation.Y = 10;
+		}
+
+		//UE_LOG(LogTemp, Warning, TEXT("%s"), *NewLocation.ToString());
 
 		SetActorLocation(NewLocation);
 	}
@@ -49,12 +74,20 @@ void AShipController::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 void AShipController::Move_Forward(float AxisValue)
 {
-	CurrentVelocity.X = AxisValue * 100.0f;
+	float ClampedSpeed = FMath::Clamp<float>(AxisValue, -1, 1);
+	CurrentVelocity.X = ClampedSpeed * 100.0f;
 }
 
 void AShipController::Move_Right(float AxisValue)
 {
-	CurrentVelocity.Y = AxisValue * 100.0f;
+	float ClampedSpeed = FMath::Clamp<float>(AxisValue, -1, 1);
+	CurrentVelocity.Y = ClampedSpeed * 100.0f;
+	FRotator ShipRotation = GetActorForwardVector().Rotation();
+	RotationValue += AxisValue;
+	// Set Rotation of ship when move Right
+	ShipRotation.Roll += RotationValue * 10.f;
+	SetActorRelativeRotation(ShipRotation);
+
 }
 
 void AShipController::OnRestart()
