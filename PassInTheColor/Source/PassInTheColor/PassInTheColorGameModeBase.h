@@ -3,18 +3,58 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameModeBase.h"
+#include "GameFramework/GameMode.h"
 #include "PassInTheColorGameModeBase.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PASSINTHECOLOR_API APassInTheColorGameModeBase : public AGameModeBase
+class PASSINTHECOLOR_API APassInTheColorGameModeBase : public AGameMode
 {
 	GENERATED_BODY()
 	
+
+	float MINIMUM_INTERVAL = 0.5f;
+	float MAXIMUM_INTERVAL = 2.0f;
+	float TIME_TO_MINIMUM_INTERVAL = 30.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Wall Setup")
+		float TimeToSpawnWall = 60;
 	
-	
-	
+public:
+
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
+
+	UPROPERTY(EditAnywhere, Category = "Spawning")
+		TSubclassOf<class AColorToSpawn> ColorToSpawnBlueprint;
+
+	UPROPERTY(EditAnywhere, Category = "Spawning")
+		TSubclassOf<class AResistenceWall> WallToSpawnBlueprint;
+
+	float ColorTimer;
+	float GameTimer;
+
+	void IncrementScore();
+	void OnGameOver();
+
+	UFUNCTION(BlueprintCallable, Category = "UMGGame")
+		void ChangeMenuWidget(TSubclassOf<UUserWidget> NewWidgetClass);
+
+	UPROPERTY(EditAnywhere, Category = "WallSpawn")
+		bool bIsWallSpawned = false;
+
+protected:
+
+	int Score = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UMGGame")
+		TSubclassOf<UUserWidget> StartingWidgetClass;
+
+	UPROPERTY()
+		UUserWidget* CurrentWidget;
+
+private:
+	float TimeResistenceWall;
 };
