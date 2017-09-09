@@ -31,10 +31,13 @@ void AResistenceWall::Tick(float DeltaTime)
 
 	SetActorLocation(NewLocation);
 
-	if (NewLocation.X < -600.0f)
+	if (NewLocation.X < -10.0f)
 	{
 		this->Destroy();
 		((APassInTheColorGameModeBase*)GetWorld()->GetAuthGameMode())->bIsWallSpawned = false;
+		((APassInTheColorGameModeBase*)GetWorld()->GetAuthGameMode())->TimeResistenceWall = ((APassInTheColorGameModeBase*)GetWorld()->GetAuthGameMode())->TimeToSpawnWall;
+		((APassInTheColorGameModeBase*)GetWorld()->GetAuthGameMode())->GameTimer = 0.f;
+		((APassInTheColorGameModeBase*)GetWorld()->GetAuthGameMode())->bSpawnColor = true;
 	}
 }
 

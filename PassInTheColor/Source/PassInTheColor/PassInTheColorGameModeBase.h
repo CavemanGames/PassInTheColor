@@ -19,9 +19,6 @@ class PASSINTHECOLOR_API APassInTheColorGameModeBase : public AGameMode
 	float MAXIMUM_INTERVAL = 2.0f;
 	float TIME_TO_MINIMUM_INTERVAL = 30.0f;
 
-	UPROPERTY(EditAnywhere, Category = "Wall Setup")
-		float TimeToSpawnWall = 60;
-	
 public:
 
 	virtual void BeginPlay() override;
@@ -45,6 +42,14 @@ public:
 	UPROPERTY(EditAnywhere, Category = "WallSpawn")
 		bool bIsWallSpawned = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WallSpawn")
+		float TimeToSpawnWall = 60;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WallSpawn")
+		float TimeResistenceWall;
+
+	bool bSpawnColor = true;
+
 protected:
 
 	int Score = 0;
@@ -55,6 +60,4 @@ protected:
 	UPROPERTY()
 		UUserWidget* CurrentWidget;
 
-private:
-	float TimeResistenceWall;
 };

@@ -25,53 +25,54 @@ void APassInTheColorGameModeBase::Tick(float DeltaSeconds)
 
 	//UE_LOG(LogTemp, Warning, TEXT("ColorTimer: %f"), ColorTimer);
 
-	if (TimeResistenceWall > 0.f)
-	{
+	
 		if (!bIsWallSpawned)
 		{
 			UWorld* World = GetWorld();
 
 			if (World)
 			{
-				FVector Location = FVector(3000.0f, 0.f, 120.0f);
+				FVector Location = FVector(1500.0f, 0.f, 120.0f);
 
 				World->SpawnActor<AResistenceWall>(WallToSpawnBlueprint, Location, FRotator::ZeroRotator);
 				bIsWallSpawned = true;
 			}
 		}
-
-		if (ColorTimer <= 0.0f)
+		if (TimeResistenceWall <= 0.f)
 		{
-			float difficultyPercentage = FMath::Min(GameTimer / TIME_TO_MINIMUM_INTERVAL, 1.0f);
+				for (TActorIterator<AResistenceWall> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+				{
+					// Same as with the Object Iterator, access the subclass instance with the * or -> operators.
+					AResistenceWall *Wall = *ActorItr;
+					if (Wall->Speed == 0.f)
+					{
+						Wall->Speed = -400.0f;
+						bSpawnColor = false;
+					}
+				}
+		}
 
-			ColorTimer = MAXIMUM_INTERVAL - (MAXIMUM_INTERVAL - MINIMUM_INTERVAL) * difficultyPercentage;
-
-			UWorld* World = GetWorld();
-
-			if (World)
+		if (bSpawnColor)
+		{
+			if (ColorTimer <= 0.0f)
 			{
-				FVector Location = FVector(800.0f, FMath::RandRange(-700.0f, 700.0f), 71.0f);
+				float difficultyPercentage = FMath::Min(GameTimer / TIME_TO_MINIMUM_INTERVAL, 1.0f);
 
-				World->SpawnActor<AColorToSpawn>(ColorToSpawnBlueprint, Location, FRotator::ZeroRotator);
+				ColorTimer = MAXIMUM_INTERVAL - (MAXIMUM_INTERVAL - MINIMUM_INTERVAL) * difficultyPercentage;
+
+				UWorld* World = GetWorld();
+
+				if (World)
+				{
+					FVector Location = FVector(1200.0f, FMath::RandRange(0.f, 400.0f), 71.0f);
+
+					World->SpawnActor<AColorToSpawn>(ColorToSpawnBlueprint, Location, FRotator::ZeroRotator);
+				}
 			}
+			TimeResistenceWall -= DeltaSeconds;
 		}
-		TimeResistenceWall -= DeltaSeconds;
-	}
-	else
-	{
-		for (TActorIterator<AResistenceWall> ActorItr(GetWorld()); ActorItr; ++ActorItr)
-		{
-			// Same as with the Object Iterator, access the subclass instance with the * or -> operators.
-			AResistenceWall *Wall = *ActorItr;
-			Wall->Speed = -200.0f;
-		}
-
-		GameTimer = 0.f;
-		TimeResistenceWall = TimeToSpawnWall;
-		//bIsWallSpawned = false;
-	}
-
-	IncrementScore();
+		//UE_LOG(LogTemp, Warning, TEXT("%f"), TimeResistenceWall);
+	//IncrementScore();
 	
 }
 
