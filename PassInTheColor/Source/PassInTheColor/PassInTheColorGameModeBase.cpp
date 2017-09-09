@@ -76,9 +76,9 @@ void APassInTheColorGameModeBase::Tick(float DeltaSeconds)
 	
 }
 
-void APassInTheColorGameModeBase::IncrementScore()
+void APassInTheColorGameModeBase::IncrementScore(int Value)
 {
-	Score += 1;
+	Score += Value;
 	((UGameWidget*)CurrentWidget)->SetScore(Score);
 }
 

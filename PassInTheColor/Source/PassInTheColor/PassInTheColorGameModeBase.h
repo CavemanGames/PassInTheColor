@@ -33,7 +33,9 @@ public:
 	float ColorTimer;
 	float GameTimer;
 
-	void IncrementScore();
+	UFUNCTION(BlueprintCallable, Category = "GamePoints")
+		void IncrementScore(int Value);
+
 	void OnGameOver();
 
 	UFUNCTION(BlueprintCallable, Category = "UMGGame")
@@ -48,11 +50,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WallSpawn")
 		float TimeResistenceWall;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GamePoints")
+		int Score = 0;
+
 	bool bSpawnColor = true;
 
 protected:
-
-	int Score = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UMGGame")
 		TSubclassOf<UUserWidget> StartingWidgetClass;
