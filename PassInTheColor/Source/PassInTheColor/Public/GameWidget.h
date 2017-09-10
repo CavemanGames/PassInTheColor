@@ -12,23 +12,21 @@
 #include "GameWidget.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class PASSINTHECOLOR_API UGameWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
 
 public:
-
 	void Load();
 
 	void SetScore(int score);
 	void OnGameOver(int score);
 
-	UPROPERTY()
-		UTextBlock* ScoreText;
-	
-	
+	UTextBlock* ScoreText;
+
+
 };

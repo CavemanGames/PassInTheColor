@@ -69,7 +69,7 @@ void AShipController::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 	PlayerInputComponent->BindAxis("Forward", this, &AShipController::Move_Forward);
 	PlayerInputComponent->BindAxis("Right", this, &AShipController::Move_Right);
-	//PlayerInputComponent->BindAction("Restart", IE_Pressed, this, &AShipController::OnRestart).bExecuteWhenPaused = true;
+	//PlayerInputComponent->BindAction("Pause", IE_Pressed, this, &AShipController::OnRestart).bExecuteWhenPaused = true;
 }
 
 void AShipController::Move_Forward(float AxisValue)

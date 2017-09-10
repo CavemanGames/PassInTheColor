@@ -36,6 +36,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "GamePoints")
 		void IncrementScore(int Value);
 
+	UFUNCTION(BlueprintCallable, Category = "UMGGame")
+		void AddGameHUD();
+
 	void OnGameOver();
 
 	UFUNCTION(BlueprintCallable, Category = "UMGGame")
@@ -52,6 +55,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GamePoints")
 		int Score = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameSetup")
+		bool bIsMenuOpen = true;
 
 	bool bSpawnColor = true;
 

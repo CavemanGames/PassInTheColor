@@ -9,23 +9,21 @@ void APassInTheColorGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ChangeMenuWidget(StartingWidgetClass);
-
-	((UGameWidget*)CurrentWidget)->Load();
-
 	TimeResistenceWall = TimeToSpawnWall;
 }
 
 void APassInTheColorGameModeBase::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-
-	GameTimer += DeltaSeconds;
-	ColorTimer -= DeltaSeconds;
-
-	//UE_LOG(LogTemp, Warning, TEXT("ColorTimer: %f"), ColorTimer);
-
 	
+	if (!bIsMenuOpen)
+	{
+		GameTimer += DeltaSeconds;
+		ColorTimer -= DeltaSeconds;
+
+		//UE_LOG(LogTemp, Warning, TEXT("ColorTimer: %f"), ColorTimer);
+
+
 		if (!bIsWallSpawned)
 		{
 			UWorld* World = GetWorld();
@@ -40,16 +38,16 @@ void APassInTheColorGameModeBase::Tick(float DeltaSeconds)
 		}
 		if (TimeResistenceWall <= 0.f)
 		{
-				for (TActorIterator<AResistenceWall> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+			for (TActorIterator<AResistenceWall> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+			{
+				// Same as with the Object Iterator, access the subclass instance with the * or -> operators.
+				AResistenceWall *Wall = *ActorItr;
+				if (Wall->Speed == 0.f)
 				{
-					// Same as with the Object Iterator, access the subclass instance with the * or -> operators.
-					AResistenceWall *Wall = *ActorItr;
-					if (Wall->Speed == 0.f)
-					{
-						Wall->Speed = -400.0f;
-						bSpawnColor = false;
-					}
+					Wall->Speed = -400.0f;
+					bSpawnColor = false;
 				}
+			}
 		}
 
 		if (bSpawnColor)
@@ -64,7 +62,7 @@ void APassInTheColorGameModeBase::Tick(float DeltaSeconds)
 
 				if (World)
 				{
-					FVector Location = FVector(1200.0f, FMath::RandRange(0.f, 400.0f), 71.0f);
+					FVector Location = FVector(1200.0f, FMath::RandRange(0.f, 500.0f), 71.0f);
 
 					World->SpawnActor<AColorToSpawn>(ColorToSpawnBlueprint, Location, FRotator::ZeroRotator);
 				}
@@ -73,35 +71,45 @@ void APassInTheColorGameModeBase::Tick(float DeltaSeconds)
 		}
 		//UE_LOG(LogTemp, Warning, TEXT("%f"), TimeResistenceWall);
 	//IncrementScore();
-	
+	}
 }
 
 void APassInTheColorGameModeBase::IncrementScore(int Value)
 {
 	Score += Value;
-	((UGameWidget*)CurrentWidget)->SetScore(Score);
+	//((UGameWidget*)CurrentWidget)->SetScore(Score);
+}
+
+void APassInTheColorGameModeBase::AddGameHUD()
+{
+	//ChangeMenuWidget(StartingWidgetClass);
+	//((UGameWidget*)CurrentWidget)->Load();
 }
 
 void APassInTheColorGameModeBase::OnGameOver()
 {
-	((UGameWidget*)CurrentWidget)->OnGameOver(Score);
+	//((UGameWidget*)CurrentWidget)->OnGameOver(Score);
 }
 
 void APassInTheColorGameModeBase::ChangeMenuWidget(TSubclassOf<UUserWidget> NewWidgetClass)
 {
-	if (CurrentWidget != nullptr)
+	if (!bIsMenuOpen)
 	{
-		CurrentWidget->RemoveFromViewport();
-		CurrentWidget = nullptr;
-	}
-
-	if (NewWidgetClass != nullptr)
-	{
-		CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), NewWidgetClass);
 
 		if (CurrentWidget != nullptr)
 		{
-			CurrentWidget->AddToViewport();
+			CurrentWidget->RemoveFromViewport();
+			CurrentWidget = nullptr;
+		}
+
+		if (NewWidgetClass != nullptr)
+		{
+			CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), NewWidgetClass);
+
+			if (CurrentWidget != nullptr)
+			{
+				CurrentWidget->AddToViewport();
+			}
 		}
 	}
 }

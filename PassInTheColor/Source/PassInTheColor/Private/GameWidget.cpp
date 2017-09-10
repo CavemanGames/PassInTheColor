@@ -8,7 +8,7 @@ void UGameWidget::Load()
 {
 	const FName TextBlockName = FName(TEXT("GameTextBlock"));
 
-	if (ScoreText == nullptr)
+	//if (ScoreText == nullptr)
 	{
 		ScoreText = (UTextBlock*)(WidgetTree->FindWidget(TextBlockName));
 	}
